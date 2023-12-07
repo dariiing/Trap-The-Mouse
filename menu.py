@@ -1,19 +1,16 @@
 import math
+import sys
 
 import pygame
 from constants import *
-
 from hexagon import draw_hexagon
 from map import generate_hexagon_map
 
 win = pygame.display.set_mode((WIDTH, HEIGHT))
-
 pygame.font.init()
-
 
 def draw_title_and_timer(surface, timer):
     title_font = pygame.font.Font("Design/MagicEnglish.ttf", 60)
-
     timer_font = pygame.font.Font(None, 40)
 
     title_text = title_font.render("Trap the Mouse", True, WHITE, PINK)
@@ -24,7 +21,6 @@ def draw_title_and_timer(surface, timer):
 
     surface.blit(title_text, title_rect)
     surface.blit(timer_text, timer_rect)
-
 
 def draw_button(x, y, width, height, text, action=None):
     shadow_color = (240, 180, 190)
@@ -45,7 +41,6 @@ def draw_button(x, y, width, height, text, action=None):
     if x < mouse_x < x + width and y < mouse_y < y + height:
         if mouse_click[0] == 1 and action is not None:
             action()
-
 
 def menu():
     pygame.display.set_caption("Trap the Mouse")
@@ -86,7 +81,6 @@ def menu():
         clock.tick(60)
 
     pygame.quit()
-
 
 def run_game(game_title, hex_size, map_rows, map_cols):
     pygame.display.set_caption(game_title)
@@ -132,9 +126,9 @@ def run_game(game_title, hex_size, map_rows, map_cols):
 
         draw_title_and_timer(win, timer)
 
-        draw_button(return_button_x, return_button_y, return_button_width, return_button_height, "Return to Main Menu")
+        draw_button(return_button_x, return_button_y, return_button_width, return_button_height, "Return to Main Menu", lambda: menu())
 
-        draw_button(exit_button_x, exit_button_y, exit_button_width, exit_button_height, "Exit", lambda: None)
+        draw_button(exit_button_x, exit_button_y, exit_button_width, exit_button_height, "Exit", lambda: sys.exit())
 
         pygame.display.update()
         clock.tick(60)
