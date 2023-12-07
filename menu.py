@@ -116,12 +116,13 @@ def run_game(game_title, hex_size, map_rows, map_cols):
                 mouse_pos = pygame.mouse.get_pos()
                 for hexagon in hexagons:
                     if hexagon.x < mouse_pos[0] < hexagon.x + 3 * hex_size / 2 and \
-                       hexagon.y < mouse_pos[1] < hexagon.y + math.sqrt(3) * hex_size:
-                        hexagon.color = RED
+                            hexagon.y < mouse_pos[1] < hexagon.y + math.sqrt(3) * hex_size:
+                        if hexagon.color != (0, 0, 0):
+                            hexagon.color = RED
 
                 if (
-                    exit_button_x < mouse_pos[0] < exit_button_x + exit_button_width
-                    and exit_button_y < mouse_pos[1] < exit_button_y + exit_button_height
+                        exit_button_x < mouse_pos[0] < exit_button_x + exit_button_width
+                        and exit_button_y < mouse_pos[1] < exit_button_y + exit_button_height
                 ):
                     run = False
 
@@ -130,7 +131,8 @@ def run_game(game_title, hex_size, map_rows, map_cols):
 
         draw_title_and_timer(win, timer)
 
-        draw_button(return_button_x, return_button_y, return_button_width, return_button_height, "Return to Main Menu", lambda: menu())
+        draw_button(return_button_x, return_button_y, return_button_width, return_button_height, "Return to Main Menu",
+                    lambda: menu())
 
         draw_button(exit_button_x, exit_button_y, exit_button_width, exit_button_height, "Exit", lambda: sys.exit())
 
