@@ -9,6 +9,7 @@ from map import generate_hexagon_map
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.font.init()
 
+
 def draw_title_and_timer(surface, timer):
     title_font = pygame.font.Font("Design/MagicEnglish.ttf", 60)
     timer_font = pygame.font.Font(None, 40)
@@ -21,6 +22,7 @@ def draw_title_and_timer(surface, timer):
 
     surface.blit(title_text, title_rect)
     surface.blit(timer_text, timer_rect)
+
 
 def draw_button(x, y, width, height, text, action=None):
     shadow_color = (240, 180, 190)
@@ -41,6 +43,7 @@ def draw_button(x, y, width, height, text, action=None):
     if x < mouse_x < x + width and y < mouse_y < y + height:
         if mouse_click[0] == 1 and action is not None:
             action()
+
 
 def menu():
     pygame.display.set_caption("Trap the Mouse")
@@ -81,6 +84,7 @@ def menu():
         clock.tick(60)
 
     pygame.quit()
+
 
 def run_game(game_title, hex_size, map_rows, map_cols):
     pygame.display.set_caption(game_title)

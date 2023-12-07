@@ -3,10 +3,11 @@ import math
 
 
 class Hexagon:
-    def __init__(self, x, y, color):
+    def __init__(self, x, y, color, is_colored=False):
         self.x = x
         self.y = y
         self.color = color
+        self.is_colored = is_colored
 
 
 def draw_hexagon(surface, x, y, size, color, border_color, border_width):
