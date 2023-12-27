@@ -45,7 +45,7 @@ def generate_hexagon_map(rows, cols, hex_size, screen_width, screen_height, colo
         mouse.color = BLACK
         hexagons.append(mouse)
 
-    return hexagons
+    return hexagons, start_x, total_width
 
 
 def get_neighbors(hexagons, target_hexagon, hex_size):
