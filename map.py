@@ -50,7 +50,9 @@ def get_neighbors(hexagons, target_hexagon, hex_size):
     neighbors = []
     for hexagon in hexagons:
         if hexagon != target_hexagon:
-            distance = math.sqrt((hexagon.x - target_hexagon.x) ** 2 + (hexagon.y - target_hexagon.y) ** 2)
-            if distance <= hex_size * 2:
-                neighbors.append(hexagon)
+            dx = abs(hexagon.x - target_hexagon.x)
+            dy = abs(hexagon.y - target_hexagon.y)
+            if max(dx, dy) <= hex_size * math.sqrt(3):
+                if min(dx, dy) <= hex_size:
+                    neighbors.append(hexagon)
     return neighbors
