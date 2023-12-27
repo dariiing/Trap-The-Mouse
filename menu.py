@@ -1,12 +1,20 @@
 import math
 import random
 import sys
-import time
-
 import pygame
 from constants import *
 from hexagon import draw_hexagon
 from map import generate_hexagon_map, get_neighbors
+
+exit_button_x = WIDTH - 350
+exit_button_y = HEIGHT - 80
+exit_button_width = 300
+exit_button_height = 60
+
+return_button_x = 50
+return_button_y = HEIGHT - 80
+return_button_width = 300
+return_button_height = 60
 
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.font.init()
@@ -87,29 +95,48 @@ def menu():
 
     pygame.quit()
 
-exit_button_x = WIDTH - 350
-exit_button_y = HEIGHT - 80
-exit_button_width = 300
-exit_button_height = 60
-
-return_button_x = 50
-return_button_y = HEIGHT - 80
-return_button_width = 300
-return_button_height = 60
-
 
 def display_congratulations_screen():
     win.fill(PINK)
+    title_font = pygame.font.Font("Design/MagicEnglish.ttf", 60)
+
+    title_text = title_font.render("Trap the Mouse", True, WHITE, PINK)
+    title_rect = title_text.get_rect(center=(WIDTH // 2, 30))
+    win.blit(title_text, title_rect)
+
     congratulation_text = pygame.font.Font("Design/MagicEnglish.ttf", 60)
     congratulation_text = congratulation_text.render("Congratulations! You've won!", True, (255, 255, 255))
     text_rect = congratulation_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+
     draw_button(return_button_x, return_button_y, return_button_width, return_button_height, "Return to Main Menu",
                 lambda: menu())
 
     draw_button(exit_button_x, exit_button_y, exit_button_width, exit_button_height, "Exit", lambda: sys.exit())
+
     win.blit(congratulation_text, text_rect)
     pygame.display.update()
-    # pygame.time.delay(10000)
+
+    run = True
+    clock = pygame.time.Clock()
+
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if (
+                        return_button_x < mouse_pos[0] < return_button_x + return_button_width
+                        and return_button_y < mouse_pos[1] < return_button_y + return_button_height
+                ):
+                    menu()
+                elif (
+                        exit_button_x < mouse_pos[0] < exit_button_x + exit_button_width
+                        and exit_button_y < mouse_pos[1] < exit_button_y + exit_button_height
+                ):
+                    sys.exit()
+
+        clock.tick(60)
 
 
 def run_game(game_title, hex_size, map_rows, map_cols):
@@ -135,20 +162,17 @@ def run_game(game_title, hex_size, map_rows, map_cols):
                             hexagon.y < mouse_pos[1] < hexagon.y + math.sqrt(3) * hex_size:
                         if hexagon.color != (0, 0, 0):
                             hexagon.color = RED
-                            pygame.display.update()
 
                 # switch the mouse to a random neighbour hexagon
                 for hexagon in hexagons:
-                    if hexagon.color == (0, 0, 0):
+                    if hexagon.color == BLACK:
                         neighbors = get_neighbors(hexagons, hexagon, hex_size)
-                        print(len(neighbors))
-                        valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == (255, 255, 255)]
-
+                        valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == WHITE]
+                        print(len(valid_neighbors))
                         if valid_neighbors:
                             random_choice = random.choice(valid_neighbors)
-                            random_choice.color = (0, 0, 0)
-                            hexagon.color = (255, 255, 255)
-                            pygame.display.update()
+                            random_choice.color = BLACK
+                            hexagon.color = WHITE
                         else:
                             display_congratulations_screen()
                             run = False
