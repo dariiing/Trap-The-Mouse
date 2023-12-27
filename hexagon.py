@@ -12,6 +12,7 @@ class Hexagon:
 
 def draw_hexagon(surface, x, y, size, color, border_color, border_width):
     h = size * math.sqrt(3) / 2
+    # hexagon color
     pygame.draw.polygon(surface, color, [(x, y),
                                          (x + size, y),
                                          (x + size + size / 2, y + h),
@@ -19,6 +20,7 @@ def draw_hexagon(surface, x, y, size, color, border_color, border_width):
                                          (x, y + 2 * h),
                                          (x - size / 2, y + h)])
 
+    # hexagon border
     pygame.draw.polygon(surface, border_color, [(x, y),
                                                 (x + size, y),
                                                 (x + size + size / 2, y + h),

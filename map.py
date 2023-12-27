@@ -1,4 +1,3 @@
-import pygame
 import math
 import random
 from hexagon import Hexagon
@@ -16,7 +15,7 @@ def generate_hexagon_map(rows, cols, hex_size, screen_width, screen_height, colo
     center_y = start_y + total_height / 2
 
     closest_distance = float('inf')
-    closest_hexagon = None
+    mouse = None
 
     for row in range(rows):
         for col in range(cols):
@@ -31,7 +30,7 @@ def generate_hexagon_map(rows, cols, hex_size, screen_width, screen_height, colo
             # check position for mouse
             if distance_to_center < closest_distance:
                 closest_distance = distance_to_center
-                closest_hexagon = Hexagon(x, y, (255, 255, 255), False)
+                mouse = Hexagon(x, y, (255, 255, 255), False)
 
             # percentage to be changed according to the level of the game(easy,medium,hard)
             is_colored = random.random() < colored_percentage
@@ -40,8 +39,18 @@ def generate_hexagon_map(rows, cols, hex_size, screen_width, screen_height, colo
             hexagons.append(Hexagon(x, y, color, is_colored))
 
     # added mouse to map
-    if closest_hexagon:
-        closest_hexagon.color = (0, 0, 0)
-        hexagons.append(closest_hexagon)
+    if mouse:
+        mouse.color = (0, 0, 0)
+        hexagons.append(mouse)
 
     return hexagons
+
+
+def get_neighbors(hexagons, target_hexagon, hex_size):
+    neighbors = []
+    for hexagon in hexagons:
+        if hexagon != target_hexagon:
+            distance = math.sqrt((hexagon.x - target_hexagon.x) ** 2 + (hexagon.y - target_hexagon.y) ** 2)
+            if distance <= hex_size * 2:
+                neighbors.append(hexagon)
+    return neighbors

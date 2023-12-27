@@ -1,10 +1,11 @@
 import math
+import random
 import sys
 
 import pygame
 from constants import *
 from hexagon import draw_hexagon
-from map import generate_hexagon_map
+from map import generate_hexagon_map, get_neighbors
 
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.font.init()
@@ -120,6 +121,27 @@ def run_game(game_title, hex_size, map_rows, map_cols):
                         if hexagon.color != (0, 0, 0):
                             hexagon.color = RED
 
+                # switch the mouse to a random neighbour hexagon
+                for hexagon in hexagons:
+                    if hexagon.color == (0, 0, 0):
+                        neighbors = get_neighbors(hexagons, hexagon, hex_size)
+                        valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == (255, 255, 255)]
+
+                        if valid_neighbors:
+                            random_choice = random.choice(valid_neighbors)
+                            random_choice.color = (0, 0, 0)
+                            hexagon.color = (255, 255, 255)
+                        else:
+                            #work in progress
+                            win_text = pygame.font.Font("Design/MagicEnglish.ttf", 60)
+                            win_text = win_text.render("Congratulations! You've won!", True, (255, 255, 255))
+
+                            text_rect = win_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+                            win.blit(win_text, text_rect)
+
+                            pygame.time.delay(3000)
+                            run = False
+
                 if (
                         exit_button_x < mouse_pos[0] < exit_button_x + exit_button_width
                         and exit_button_y < mouse_pos[1] < exit_button_y + exit_button_height
@@ -128,6 +150,8 @@ def run_game(game_title, hex_size, map_rows, map_cols):
 
         for hexagon in hexagons:
             draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)
+
+        # BUTTONS SECTION
 
         draw_title_and_timer(win, timer)
 
