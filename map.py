@@ -42,7 +42,7 @@ def generate_hexagon_map(rows, cols, hex_size, screen_width, screen_height, colo
 
     # added mouse to map
     if mouse:
-        mouse.color = (0, 0, 0)
+        mouse.color = BLACK
         hexagons.append(mouse)
 
     return hexagons
