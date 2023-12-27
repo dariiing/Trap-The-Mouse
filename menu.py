@@ -157,26 +157,33 @@ def run_game(game_title, hex_size, map_rows, map_cols):
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                for hexagon in hexagons:
-                    if hexagon.x < mouse_pos[0] < hexagon.x + 3 * hex_size / 2 and \
-                            hexagon.y < mouse_pos[1] < hexagon.y + math.sqrt(3) * hex_size:
-                        if hexagon.color != (0, 0, 0):
-                            hexagon.color = RED
+                valid_move = False
 
-                # switch the mouse to a random neighbour hexagon
                 for hexagon in hexagons:
-                    if hexagon.color == BLACK:
-                        neighbors = get_neighbors(hexagons, hexagon, hex_size)
-                        valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == WHITE]
-                        print(len(valid_neighbors))
-                        if valid_neighbors:
-                            random_choice = random.choice(valid_neighbors)
-                            random_choice.color = BLACK
-                            hexagon.color = WHITE
-                        else:
-                            display_congratulations_screen()
-                            run = False
+                    if (
+                            hexagon.x < mouse_pos[0] < hexagon.x + 3 * hex_size / 2
+                            and hexagon.y < mouse_pos[1] < hexagon.y + math.sqrt(3) * hex_size
+                    ):
+                        if hexagon.color == WHITE:
+                            hexagon.color = RED
+                            valid_move = True
                         break
+
+                if valid_move:
+                    # switch the mouse to a random neighbor hexagon
+                    for hexagon in hexagons:
+                        if hexagon.color == BLACK:
+                            neighbors = get_neighbors(hexagons, hexagon, hex_size)
+                            valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == WHITE]
+                            if valid_neighbors:
+                                random_choice = random.choice(valid_neighbors)
+                                random_choice.color = BLACK
+                                hexagon.color = WHITE
+                                break
+                            else:
+                                display_congratulations_screen()
+                                run = False
+                                break
 
                 if (
                         exit_button_x < mouse_pos[0] < exit_button_x + exit_button_width
