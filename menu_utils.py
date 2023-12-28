@@ -1,18 +1,20 @@
 from constants import *
 
 
-def draw_title_and_timer(timer):
+def draw_title():
     title_font = pygame.font.Font("Design/MagicEnglish.ttf", 60)
-    timer_font = pygame.font.Font(None, 40)
-
     title_text = title_font.render("Trap the Mouse", True, WHITE, PINK)
-    timer_text = timer_font.render(f"Time: {timer // 60:02}:{timer % 60:05.2f}", True, WHITE, PINK)
-
     title_rect = title_text.get_rect(center=(WIDTH // 2, 30))
-    timer_rect = timer_text.get_rect(center=(WIDTH // 2, 70))
-
     win.blit(title_text, title_rect)
-    win.blit(timer_text, timer_rect)
+
+
+def draw_player_turn(player_turn):
+    draw_title()
+
+    title_font_small = pygame.font.Font("Design/MagicEnglish.ttf", 40)
+    title_text_small = title_font_small.render(f"Player {player_turn}'s Turn", True, WHITE, PINK)
+    title_rect_small = title_text_small.get_rect(center=(WIDTH // 2, 80))
+    win.blit(title_text_small, title_rect_small)
 
 
 def draw_button(x, y, width, height, text, action=None):
