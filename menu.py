@@ -15,11 +15,13 @@ def initialize_window():
 
 def draw_menu_buttons():
     draw_button(50, 200, 300, 60, "Player vs Player",
-                lambda: run_player_vs_player("Trap the Mouse - PvP Mode", 25, 15, 20))
+                lambda: run_player_vs_player("Trap the Mouse - PvP Mode", 25, 15, 20, 0.05))
     draw_button(50, 300, 300, 60, "Player vs AI (Easy)",
-                lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20))
-    draw_button(50, 400, 300, 60, "Player vs AI (Medium)", lambda: None)
-    draw_button(50, 500, 300, 60, "Player vs AI (Hard)", lambda: None)
+                lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.05))
+    draw_button(50, 400, 300, 60, "Player vs AI (Medium)",
+                lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.03))
+    draw_button(50, 500, 300, 60, "Player vs AI (Hard)",
+                lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.01))
     draw_button(50, 600, 300, 60, "Rules", lambda: display_rules_screen())
 
 
@@ -153,14 +155,15 @@ def display_rules_screen():
         clock.tick(60)
 
 
-def init_game(game_title, hex_size, map_rows, map_cols):
+def init_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
     pygame.display.set_caption(game_title)
     clock = pygame.time.Clock()
     run = True
     win.fill(PINK)
 
     # creating the map
-    hexagons, start_x, total_width = generate_hexagon_map(map_rows, map_cols, hex_size, WIDTH, HEIGHT)
+    hexagons, start_x, total_width = generate_hexagon_map(map_rows, map_cols, hex_size, WIDTH, HEIGHT,
+                                                          colored_percentage)
 
     return hexagons, start_x, total_width, clock, run
 
@@ -173,8 +176,8 @@ def draw_game_buttons():
 
 
 # easy game
-def run_easy_game(game_title, hex_size, map_rows, map_cols):
-    hexagons, start_x, total_width, clock, run = init_game(game_title, hex_size, map_rows, map_cols)
+def run_easy_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
+    hexagons, start_x, total_width, clock, run = init_game(game_title, hex_size, map_rows, map_cols, colored_percentage)
 
     while run:
         for event in pygame.event.get():
@@ -234,8 +237,8 @@ def run_easy_game(game_title, hex_size, map_rows, map_cols):
 
 
 # pvp game
-def run_player_vs_player(game_title, hex_size, map_rows, map_cols):
-    hexagons, start_x, total_width, clock, run = init_game(game_title, hex_size, map_rows, map_cols)
+def run_player_vs_player(game_title, hex_size, map_rows, map_cols, colored_percentage):
+    hexagons, start_x, total_width, clock, run = init_game(game_title, hex_size, map_rows, map_cols, colored_percentage)
 
     player_turn = 1
 
