@@ -1,6 +1,8 @@
 import math
 import random
 import sys
+
+from ai import distance_to_edge
 from constants import *
 from hexagon import draw_hexagon
 from map import generate_hexagon_map, get_neighbors
@@ -19,9 +21,9 @@ def draw_menu_buttons():
     draw_button(50, 300, 300, 60, "Player vs AI (Easy)",
                 lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.05))
     draw_button(50, 400, 300, 60, "Player vs AI (Medium)",
-                lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.03))
+                lambda: run_medium_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.05))
     draw_button(50, 500, 300, 60, "Player vs AI (Hard)",
-                lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.01))
+                lambda: run_medium_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.03))
     draw_button(50, 600, 300, 60, "Rules", lambda: display_rules_screen())
 
 
@@ -162,10 +164,11 @@ def init_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
     win.fill(PINK)
 
     # creating the map
-    hexagons, start_x, total_width = generate_hexagon_map(map_rows, map_cols, hex_size, WIDTH, HEIGHT,
-                                                          colored_percentage)
+    hexagons, start_x, total_width, start_y, total_height = generate_hexagon_map(map_rows, map_cols, hex_size, WIDTH,
+                                                                                 HEIGHT,
+                                                                                 colored_percentage)
 
-    return hexagons, start_x, total_width, clock, run
+    return hexagons, start_x, total_width, start_y, total_height, clock, run
 
 
 def draw_game_buttons():
@@ -177,7 +180,8 @@ def draw_game_buttons():
 
 # easy game
 def run_easy_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
-    hexagons, start_x, total_width, clock, run = init_game(game_title, hex_size, map_rows, map_cols, colored_percentage)
+    hexagons, start_x, total_width, start_y, total_height, clock, run = init_game(game_title, hex_size, map_rows,
+                                                                                  map_cols, colored_percentage)
 
     while run:
         for event in pygame.event.get():
@@ -238,7 +242,8 @@ def run_easy_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
 
 # pvp game
 def run_player_vs_player(game_title, hex_size, map_rows, map_cols, colored_percentage):
-    hexagons, start_x, total_width, clock, run = init_game(game_title, hex_size, map_rows, map_cols, colored_percentage)
+    hexagons, start_x, total_width, start_y, total_height, clock, run = init_game(game_title, hex_size, map_rows,
+                                                                                  map_cols, colored_percentage)
 
     player_turn = 1
 
@@ -298,6 +303,71 @@ def run_player_vs_player(game_title, hex_size, map_rows, map_cols, colored_perce
             draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)
 
         draw_player_turn(player_turn)
+        draw_game_buttons()
+
+        pygame.display.update()
+        clock.tick(60)
+
+    pygame.quit()
+
+
+# medium game
+
+def run_medium_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
+    hexagons, start_x, total_width, start_y, total_height, clock, run = init_game(game_title, hex_size, map_rows,
+                                                                                  map_cols, colored_percentage)
+
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                valid_move = False
+
+                for hexagon in hexagons:
+                    if (
+                            hexagon.x < mouse_pos[0] < hexagon.x + 3 * hex_size / 2
+                            and hexagon.y < mouse_pos[1] < hexagon.y + math.sqrt(3) * hex_size
+                    ):
+                        if hexagon.color == WHITE:
+                            hexagon.color = RED
+                            valid_move = True
+                        break
+
+                if valid_move:
+                    for hexagon in hexagons:
+                        if hexagon.color == BLACK:
+                            if hexagon.x <= start_x or hexagon.x + 3 * hex_size / 2 >= start_x + total_width:
+                                display_game_over_screen()
+                                run = False
+                                break
+                            else:
+                                neighbors = get_neighbors(hexagons, hexagon, hex_size)
+                                valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == WHITE]
+                                if valid_neighbors:
+                                    chosen_neighbor = min(valid_neighbors,
+                                                          key=lambda x: distance_to_edge(x, start_x, total_width,
+                                                                                         start_y, total_height,
+                                                                                         hex_size))
+                                    chosen_neighbor.color = BLACK
+                                    hexagon.color = WHITE
+                                    break
+                                else:
+                                    display_congratulations_screen()
+                                    run = False
+                                    break
+
+                if (
+                        EXIT_BUTTON["x"] < mouse_pos[0] < EXIT_BUTTON["x"] + EXIT_BUTTON["width"]
+                        and EXIT_BUTTON["y"] < mouse_pos[1] < EXIT_BUTTON["y"] + EXIT_BUTTON["height"]
+                ):
+                    run = False
+
+        for hexagon in hexagons:
+            draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)
+
+        draw_title()
         draw_game_buttons()
 
         pygame.display.update()
