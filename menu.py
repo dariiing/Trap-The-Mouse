@@ -1,15 +1,11 @@
 import math
 import random
 import sys
-import pygame
 from constants import *
 from hexagon import draw_hexagon
 from map import generate_hexagon_map, get_neighbors
+from menu_utils import draw_button, draw_title_and_timer, draw_image
 
-EXIT_BUTTON = {"x": WIDTH - 350, "y": HEIGHT - 80, "width": 300, "height": 60}
-RETURN_BUTTON = {"x": 50, "y": HEIGHT - 80, "width": 300, "height": 60}
-
-win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.font.init()
 
 
@@ -17,54 +13,12 @@ def initialize_window():
     pygame.display.set_caption("Trap the Mouse")
 
 
-def draw_title_and_timer(timer):
-    title_font = pygame.font.Font("Design/MagicEnglish.ttf", 60)
-    timer_font = pygame.font.Font(None, 40)
-
-    title_text = title_font.render("Trap the Mouse", True, WHITE, PINK)
-    timer_text = timer_font.render(f"Time: {timer // 60:02}:{timer % 60:05.2f}", True, WHITE, PINK)
-
-    title_rect = title_text.get_rect(center=(WIDTH // 2, 30))
-    timer_rect = timer_text.get_rect(center=(WIDTH // 2, 70))
-
-    win.blit(title_text, title_rect)
-    win.blit(timer_text, timer_rect)
-
-
-def draw_button(x, y, width, height, text, action=None):
-    shadow_color = (240, 180, 190)
-    shadow_offset = 5
-    pygame.draw.rect(win, shadow_color, (x + shadow_offset, y + shadow_offset, width, height), border_radius=10)
-    pygame.draw.rect(win, LIGHT_PINK, (x, y, width, height), border_radius=10)
-    pygame.draw.rect(win, PINK, (x, y, width, height), 2, border_radius=10)
-
-    font = pygame.font.Font(None, 36)
-    text_surface = font.render(text, True, WHITE)
-    text_rect = text_surface.get_rect(center=(x + width / 2, y + height / 2))
-    win.blit(text_surface, text_rect)
-
-    mouse_x, mouse_y = pygame.mouse.get_pos()
-    mouse_click = pygame.mouse.get_pressed()
-
-    if x < mouse_x < x + width and y < mouse_y < y + height:
-        if mouse_click[0] == 1 and action is not None:
-            action()
-
-
 def draw_menu_buttons():
     draw_button(50, 200, 300, 60, "Player vs Player", lambda: None)
-    draw_button(50, 300, 300, 60, "Player vs AI (Easy)", lambda: run_game("Trap the Mouse - PvAI Easy", 25, 15, 20))
+    draw_button(50, 300, 300, 60, "Player vs AI (Easy)", lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20))
     draw_button(50, 400, 300, 60, "Player vs AI (Medium)", lambda: None)
     draw_button(50, 500, 300, 60, "Player vs AI (Hard)", lambda: None)
     draw_button(50, 600, 300, 60, "Rules", lambda: display_rules_screen())
-
-
-def draw_image(image):
-    scaled_width = image.get_width() // 1.5
-    scaled_height = image.get_height() // 1.5
-    scaled_image = pygame.transform.scale(image, (scaled_width, scaled_height))
-    image_rect = scaled_image.get_rect(center=(WIDTH - scaled_image.get_width() // 1.5, HEIGHT // 2))
-    win.blit(scaled_image, image_rect)
 
 
 def menu():
@@ -100,10 +54,7 @@ def display_screen(message):
     text = text.render(message, True, (255, 255, 255))
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
 
-    draw_button(RETURN_BUTTON["x"], RETURN_BUTTON["y"], RETURN_BUTTON["width"], RETURN_BUTTON["height"],
-                "Return to Main Menu", lambda: menu())
-    draw_button(EXIT_BUTTON["x"], EXIT_BUTTON["y"], EXIT_BUTTON["width"], EXIT_BUTTON["height"], "Exit",
-                lambda: sys.exit())
+    draw_game_buttons()
 
     win.blit(text, text_rect)
     pygame.display.update()
@@ -165,10 +116,7 @@ def display_rules_screen():
         win.blit(text, text_rect)
         y_position += 40
 
-    draw_button(RETURN_BUTTON["x"], RETURN_BUTTON["y"], RETURN_BUTTON["width"], RETURN_BUTTON["height"],
-                "Return to Main Menu", lambda: menu())
-    draw_button(EXIT_BUTTON["x"], EXIT_BUTTON["y"], EXIT_BUTTON["width"], EXIT_BUTTON["height"], "Exit",
-                lambda: sys.exit())
+    draw_game_buttons()
 
     pygame.display.update()
 
@@ -195,16 +143,8 @@ def display_rules_screen():
         clock.tick(60)
 
 
-def run_game(game_title, hex_size, map_rows, map_cols):
-    pygame.display.set_caption(game_title)
-    clock = pygame.time.Clock()
-    run = True
-    win.fill(PINK)
-
-    # creating the map
-    hexagons, start_x, total_width = generate_hexagon_map(map_rows, map_cols, hex_size, WIDTH, HEIGHT)
-
-    timer = 0
+def run_easy_game(game_title, hex_size, map_rows, map_cols):
+    timer, hexagons, start_x, total_width, clock, run = init_game(game_title, hex_size, map_rows, map_cols)
 
     while run:
         for event in pygame.event.get():
@@ -254,15 +194,31 @@ def run_game(game_title, hex_size, map_rows, map_cols):
         for hexagon in hexagons:
             draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)
 
-        # BUTTONS SECTION
         draw_title_and_timer(timer)
-        draw_button(RETURN_BUTTON["x"], RETURN_BUTTON["y"], RETURN_BUTTON["width"], RETURN_BUTTON["height"],
-                    "Return to Main Menu", lambda: menu())
-        draw_button(EXIT_BUTTON["x"], EXIT_BUTTON["y"], EXIT_BUTTON["width"], EXIT_BUTTON["height"], "Exit",
-                    lambda: sys.exit())
+        draw_game_buttons()
 
         pygame.display.update()
         clock.tick(60)
         timer += 1 / 60
 
     pygame.quit()
+
+
+def init_game(game_title,hex_size, map_rows, map_cols):
+    pygame.display.set_caption(game_title)
+    clock = pygame.time.Clock()
+    run = True
+    win.fill(PINK)
+
+    # creating the map
+    hexagons, start_x, total_width = generate_hexagon_map(map_rows, map_cols, hex_size, WIDTH, HEIGHT)
+
+    timer = 0
+    return timer, hexagons, start_x, total_width, clock, run
+
+
+def draw_game_buttons():
+    draw_button(RETURN_BUTTON["x"], RETURN_BUTTON["y"], RETURN_BUTTON["width"], RETURN_BUTTON["height"],
+                "Return to Main Menu", lambda: menu())
+    draw_button(EXIT_BUTTON["x"], EXIT_BUTTON["y"], EXIT_BUTTON["width"], EXIT_BUTTON["height"], "Exit",
+                lambda: sys.exit())
