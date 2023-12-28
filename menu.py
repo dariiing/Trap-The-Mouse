@@ -1,14 +1,11 @@
 import math
 import random
 import sys
-
 from ai import distance_to_edge
 from constants import *
 from hexagon import draw_hexagon
 from map import generate_hexagon_map, get_neighbors
-from menu_utils import draw_button, draw_title, draw_image, draw_player_turn
-
-pygame.font.init()
+from menu_utils import draw_button, draw_title, draw_image, draw_player_turn, handle_click
 
 
 def initialize_window():
@@ -21,13 +18,14 @@ def draw_menu_buttons():
     draw_button(50, 300, 300, 60, "Player vs AI (Easy)",
                 lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.07))
     draw_button(50, 400, 300, 60, "Player vs AI (Medium)",
-                lambda: run_medium_hard_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.07,'medium'))
+                lambda: run_medium_hard_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.07, 'medium'))
     draw_button(50, 500, 300, 60, "Player vs AI (Hard)",
-                lambda: run_medium_hard_game("Trap the Mouse - PvAI Hard", 25, 15, 20, 0.04,'hard'))
+                lambda: run_medium_hard_game("Trap the Mouse - PvAI Hard", 25, 15, 20, 0.04, 'hard'))
     draw_button(50, 600, 300, 60, "Rules", lambda: display_rules_screen())
 
 
 def menu():
+    pygame.font.init()
     initialize_window()
     clock = pygame.time.Clock()
     run = True
@@ -87,21 +85,6 @@ def display_screen(message):
 
         clock.tick(60)
 
-
-def display_congratulations_screen():
-    display_screen("Congratulations! You've won!")
-
-
-def display_game_over_screen():
-    display_screen("Game Over! You lost!")
-
-
-def display_player1_screen():
-    display_screen("Congratulations! Player 1 won!")
-
-
-def display_player2_screen():
-    display_screen("Congratulations! Player 2 won!")
 
 
 def display_rules_screen():
@@ -205,8 +188,10 @@ def run_easy_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
                     # switch the mouse to a random neighbor hexagon
                     for hexagon in hexagons:
                         if hexagon.color == BLACK:
-                            if hexagon.x <= start_x or hexagon.x + 3 * hex_size / 2 >= start_x + total_width:
-                                display_game_over_screen()
+                            if (hexagon.x <= start_x or hexagon.x + 3 * hex_size / 2 >= start_x + total_width
+                                    or hexagon.y <= start_y or hexagon.y + math.sqrt(
+                                        3) * hex_size >= start_y + total_height):
+                                display_screen("Game Over! You lost!")
                                 run = False
                                 break
                             else:
@@ -218,15 +203,11 @@ def run_easy_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
                                     hexagon.color = WHITE
                                     break
                                 else:
-                                    display_congratulations_screen()
+                                    display_screen("Congratulations! You win!")
                                     run = False
                                     break
 
-                if (
-                        EXIT_BUTTON["x"] < mouse_pos[0] < EXIT_BUTTON["x"] + EXIT_BUTTON["width"]
-                        and EXIT_BUTTON["y"] < mouse_pos[1] < EXIT_BUTTON["y"] + EXIT_BUTTON["height"]
-                ):
-                    run = False
+                handle_click(mouse_pos, run)
 
         for hexagon in hexagons:
             draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)
@@ -282,22 +263,18 @@ def run_player_vs_player(game_title, hex_size, map_rows, map_cols, colored_perce
                         neighbors = get_neighbors(hexagons, hexagon, hex_size)
                         new_neighbors = [neighbor for neighbor in neighbors if neighbor.color == WHITE]
                         if not new_neighbors:
-                            display_player1_screen()
+                            display_screen("Congratulations! Player 1 won!")
                             run = False
                             break
                         elif hexagon.x <= start_x or hexagon.x + 3 * hex_size / 2 >= start_x + total_width:
-                            display_player2_screen()
+                            display_screen("Congratulations! Player 2 won!")
                             run = False
                             break
 
                 if valid_move:
                     player_turn = 3 - player_turn
 
-                if (
-                        EXIT_BUTTON["x"] < mouse_pos[0] < EXIT_BUTTON["x"] + EXIT_BUTTON["width"]
-                        and EXIT_BUTTON["y"] < mouse_pos[1] < EXIT_BUTTON["y"] + EXIT_BUTTON["height"]
-                ):
-                    run = False
+                handle_click(mouse_pos, run)
 
         for hexagon in hexagons:
             draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)
@@ -341,7 +318,7 @@ def run_medium_hard_game(game_title, hex_size, map_rows, map_cols, colored_perce
                             if (hexagon.x <= start_x or hexagon.x + 3 * hex_size / 2 >= start_x + total_width
                                     or hexagon.y <= start_y or hexagon.y + math.sqrt(
                                         3) * hex_size >= start_y + total_height):
-                                display_game_over_screen()
+                                display_screen("Game Over! You lost!")
                                 run = False
                                 break
                             else:
@@ -357,15 +334,11 @@ def run_medium_hard_game(game_title, hex_size, map_rows, map_cols, colored_perce
                                     hexagon.color = WHITE
                                     break
                                 else:
-                                    display_congratulations_screen()
+                                    display_screen("Congratulations! You won!")
                                     run = False
                                     break
 
-                if (
-                        EXIT_BUTTON["x"] < mouse_pos[0] < EXIT_BUTTON["x"] + EXIT_BUTTON["width"]
-                        and EXIT_BUTTON["y"] < mouse_pos[1] < EXIT_BUTTON["y"] + EXIT_BUTTON["height"]
-                ):
-                    run = False
+                handle_click(mouse_pos, run)
 
         for hexagon in hexagons:
             draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)

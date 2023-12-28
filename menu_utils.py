@@ -43,3 +43,11 @@ def draw_image(image):
     scaled_image = pygame.transform.scale(image, (scaled_width, scaled_height))
     image_rect = scaled_image.get_rect(center=(WIDTH - scaled_image.get_width() // 1.5, HEIGHT // 2))
     win.blit(scaled_image, image_rect)
+
+
+def handle_click(mouse_pos, run):
+    if (
+            EXIT_BUTTON["x"] < mouse_pos[0] < EXIT_BUTTON["x"] + EXIT_BUTTON["width"]
+            and EXIT_BUTTON["y"] < mouse_pos[1] < EXIT_BUTTON["y"] + EXIT_BUTTON["height"]
+    ):
+        run = False
