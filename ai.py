@@ -1,6 +1,8 @@
 import math
 import random
 
+from constants import *
+
 
 def distance_to_edge(hexagon, start_x, total_width, start_y, total_height, hex_size, difficulty):
     left_distance = hexagon.x - start_x
@@ -29,3 +31,4 @@ def distance_to_edge(hexagon, start_x, total_width, start_y, total_height, hex_s
     )
 
     return weighted_distance
+

@@ -9,6 +9,17 @@ class Hexagon:
         self.color = color
         self.is_colored = is_colored
 
+    def __lt__(self, other):
+        return self.x < other.x or (self.x == other.x and self.y < other.y)
+
+    def __hash__(self):
+        return hash((self.x, self.y, self.color, self.is_colored))
+
+    def __eq__(self, other):
+        if isinstance(other, Hexagon):
+            return self.x == other.x and self.y == other.y and self.color == other.color and self.is_colored == other.is_colored
+        return False
+
 
 def draw_hexagon(surface, x, y, size, color, border_color, border_width):
     h = size * math.sqrt(3) / 2

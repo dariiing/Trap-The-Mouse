@@ -1,6 +1,8 @@
 import math
 import random
 import sys
+
+from a_star import is_edge_hex, shortest_path_to_edge
 from ai import distance_to_edge
 from constants import *
 from hexagon import draw_hexagon
@@ -18,7 +20,7 @@ def draw_menu_buttons():
     draw_button(50, 300, 300, 60, "Player vs AI (Easy)",
                 lambda: run_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.07, 'easy'))
     draw_button(50, 400, 300, 60, "Player vs AI (Medium)",
-                lambda: run_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.07, 'medium'))
+                lambda: run_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.1, 'medium'))
     draw_button(50, 500, 300, 60, "Player vs AI (Hard)",
                 lambda: run_game("Trap the Mouse - PvAI Hard", 25, 15, 20, 0.04, 'hard'))
     draw_button(50, 600, 300, 60, "Rules", lambda: display_rules_screen())
@@ -220,7 +222,6 @@ def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, diffi
                     if valid_move:
                         player_turn = 3 - player_turn
 
-
                 if valid_move:
                     for hexagon in hexagons:
                         if hexagon.color == BLACK:
@@ -242,14 +243,21 @@ def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, diffi
                                         break
                                     elif difficulty == 'medium' or difficulty == 'hard':
                                         # ai
-                                        chosen_neighbor = min(valid_neighbors,
-                                                              key=lambda x: distance_to_edge(x, start_x, total_width,
-                                                                                             start_y, total_height,
-                                                                                             hex_size, difficulty))
-
-                                        chosen_neighbor.color = BLACK
-                                        hexagon.color = WHITE
-                                        break
+                                        # chosen_neighbor = min(valid_neighbors,
+                                        #                       key=lambda x: distance_to_edge(x, start_x, total_width,
+                                        #                                                      start_y, total_height,
+                                        #                                                      hex_size, difficulty))
+                                        #
+                                        # chosen_neighbor.color = BLACK
+                                        # hexagon.color = WHITE
+                                        # break
+                                        black_hexagon = next(hex for hex in hexagons if hex.color == BLACK)
+                                        shortest_path = shortest_path_to_edge(hexagons, black_hexagon, hex_size, start_x, start_y, total_width, total_height)
+                                        print(shortest_path)
+                                        if shortest_path and len(shortest_path) > 1:
+                                            next_hex = shortest_path[1]
+                                            next_hex.color = BLACK
+                                            black_hexagon.color = WHITE
 
                                 else:
                                     display_screen("Congratulations! You won!")
