@@ -2,7 +2,7 @@ import math
 import random
 import sys
 
-from a_star import is_edge_hex, shortest_path_to_edge
+from a_star import shortest_path_to_edge
 from ai import distance_to_edge
 from constants import *
 from hexagon import draw_hexagon
@@ -251,13 +251,13 @@ def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, diffi
                                         # chosen_neighbor.color = BLACK
                                         # hexagon.color = WHITE
                                         # break
-                                        black_hexagon = next(hex for hex in hexagons if hex.color == BLACK)
-                                        shortest_path = shortest_path_to_edge(hexagons, black_hexagon, hex_size, start_x, start_y, total_width, total_height)
+                                        shortest_path = shortest_path_to_edge(hexagons, hexagon, hex_size, start_x,
+                                                                              start_y, total_width, total_height)
                                         print(shortest_path)
-                                        if shortest_path and len(shortest_path) > 1:
+                                        if shortest_path is not None:
                                             next_hex = shortest_path[1]
                                             next_hex.color = BLACK
-                                            black_hexagon.color = WHITE
+                                            hexagon.color = WHITE
 
                                 else:
                                     display_screen("Congratulations! You won!")

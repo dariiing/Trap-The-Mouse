@@ -25,8 +25,6 @@ def a_star_search(hexagons, start, goal, hex_size):
 
         neighbors = get_neighbors(hexagons, current, hex_size)
         for next_hex in neighbors:
-            if next_hex.color != WHITE:
-                continue
             new_cost = cost_so_far[current] + (1 if next_hex.color == RED else 0)
             if next_hex not in cost_so_far or new_cost < cost_so_far[next_hex]:
                 cost_so_far[next_hex] = new_cost
