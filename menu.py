@@ -3,7 +3,6 @@ import random
 import sys
 
 from a_star import shortest_path_to_edge
-from ai import distance_to_edge
 from constants import *
 from hexagon import draw_hexagon
 from map import generate_hexagon_map, get_neighbors
@@ -242,15 +241,6 @@ def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, diffi
                                         hexagon.color = WHITE
                                         break
                                     elif difficulty == 'medium' or difficulty == 'hard':
-                                        # ai
-                                        # chosen_neighbor = min(valid_neighbors,
-                                        #                       key=lambda x: distance_to_edge(x, start_x, total_width,
-                                        #                                                      start_y, total_height,
-                                        #                                                      hex_size, difficulty))
-                                        #
-                                        # chosen_neighbor.color = BLACK
-                                        # hexagon.color = WHITE
-                                        # break
                                         shortest_path = shortest_path_to_edge(hexagons, hexagon, hex_size, start_x,
                                                                               start_y, total_width, total_height)
                                         print(shortest_path)

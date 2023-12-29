@@ -34,7 +34,7 @@ def generate_hexagon_map(rows, cols, hex_size, screen_width, screen_height, colo
                 closest_distance = distance_to_center
                 mouse = Hexagon(x, y, BLACK, False)
 
-            # percentage to be changed according to the level of the game(easy,medium,hard)
+            # percentage is changed according to the level of the game(easy,medium,hard)
             is_colored = random.random() < colored_percentage
             color = RED if is_colored else WHITE
 
