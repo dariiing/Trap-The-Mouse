@@ -16,11 +16,11 @@ def draw_menu_buttons():
     draw_button(50, 200, 300, 60, "Player vs Player",
                 lambda: run_player_vs_player("Trap the Mouse - PvP Mode", 25, 15, 20, 0.07))
     draw_button(50, 300, 300, 60, "Player vs AI (Easy)",
-                lambda: run_easy_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.07))
+                lambda: run_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.07, 'easy'))
     draw_button(50, 400, 300, 60, "Player vs AI (Medium)",
-                lambda: run_medium_hard_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.07, 'medium'))
+                lambda: run_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.07, 'medium'))
     draw_button(50, 500, 300, 60, "Player vs AI (Hard)",
-                lambda: run_medium_hard_game("Trap the Mouse - PvAI Hard", 25, 15, 20, 0.04, 'hard'))
+                lambda: run_game("Trap the Mouse - PvAI Hard", 25, 15, 20, 0.04, 'hard'))
     draw_button(50, 600, 300, 60, "Rules", lambda: display_rules_screen())
 
 
@@ -84,7 +84,6 @@ def display_screen(message):
                     sys.exit()
 
         clock.tick(60)
-
 
 
 def display_rules_screen():
@@ -161,66 +160,6 @@ def draw_game_buttons():
                 lambda: sys.exit())
 
 
-# easy game
-def run_easy_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
-    hexagons, start_x, total_width, start_y, total_height, clock, run = init_game(game_title, hex_size, map_rows,
-                                                                                  map_cols, colored_percentage)
-
-    while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = pygame.mouse.get_pos()
-                valid_move = False
-
-                for hexagon in hexagons:
-                    if (
-                            hexagon.x < mouse_pos[0] < hexagon.x + 3 * hex_size / 2
-                            and hexagon.y < mouse_pos[1] < hexagon.y + math.sqrt(3) * hex_size
-                    ):
-                        if hexagon.color == WHITE:
-                            hexagon.color = RED
-                            valid_move = True
-                        break
-
-                if valid_move:
-                    # switch the mouse to a random neighbor hexagon
-                    for hexagon in hexagons:
-                        if hexagon.color == BLACK:
-                            if (hexagon.x <= start_x or hexagon.x + 3 * hex_size / 2 >= start_x + total_width
-                                    or hexagon.y <= start_y or hexagon.y + math.sqrt(
-                                        3) * hex_size >= start_y + total_height):
-                                display_screen("Game Over! You lost!")
-                                run = False
-                                break
-                            else:
-                                neighbors = get_neighbors(hexagons, hexagon, hex_size)
-                                valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == WHITE]
-                                if valid_neighbors:
-                                    random_choice = random.choice(valid_neighbors)
-                                    random_choice.color = BLACK
-                                    hexagon.color = WHITE
-                                    break
-                                else:
-                                    display_screen("Congratulations! You win!")
-                                    run = False
-                                    break
-
-                handle_click(mouse_pos, run)
-
-        for hexagon in hexagons:
-            draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)
-
-        draw_title()
-        draw_game_buttons()
-
-        pygame.display.update()
-        clock.tick(60)
-
-    pygame.quit()
-
-
 # pvp game
 def run_player_vs_player(game_title, hex_size, map_rows, map_cols, colored_percentage):
     hexagons, start_x, total_width, start_y, total_height, clock, run = init_game(game_title, hex_size, map_rows,
@@ -288,9 +227,7 @@ def run_player_vs_player(game_title, hex_size, map_rows, map_cols, colored_perce
     pygame.quit()
 
 
-# medium game
-
-def run_medium_hard_game(game_title, hex_size, map_rows, map_cols, colored_percentage, difficulty):
+def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, difficulty):
     hexagons, start_x, total_width, start_y, total_height, clock, run = init_game(game_title, hex_size, map_rows,
                                                                                   map_cols, colored_percentage)
 
@@ -325,14 +262,23 @@ def run_medium_hard_game(game_title, hex_size, map_rows, map_cols, colored_perce
                                 neighbors = get_neighbors(hexagons, hexagon, hex_size)
                                 valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == WHITE]
                                 if valid_neighbors:
-                                    chosen_neighbor = min(valid_neighbors,
-                                                          key=lambda x: distance_to_edge(x, start_x, total_width,
-                                                                                         start_y, total_height,
-                                                                                         hex_size, difficulty))
+                                    if difficulty == 'easy':
+                                        # random neighbor
+                                        random_choice = random.choice(valid_neighbors)
+                                        random_choice.color = BLACK
+                                        hexagon.color = WHITE
+                                        break
+                                    elif difficulty == 'medium' or difficulty == 'hard':
+                                        # ai
+                                        chosen_neighbor = min(valid_neighbors,
+                                                              key=lambda x: distance_to_edge(x, start_x, total_width,
+                                                                                             start_y, total_height,
+                                                                                             hex_size, difficulty))
 
-                                    chosen_neighbor.color = BLACK
-                                    hexagon.color = WHITE
-                                    break
+                                        chosen_neighbor.color = BLACK
+                                        hexagon.color = WHITE
+                                        break
+
                                 else:
                                     display_screen("Congratulations! You won!")
                                     run = False
