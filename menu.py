@@ -14,7 +14,7 @@ def initialize_window():
 
 def draw_menu_buttons():
     draw_button(50, 200, 300, 60, "Player vs Player",
-                lambda: run_player_vs_player("Trap the Mouse - PvP Mode", 25, 15, 20, 0.07))
+                lambda: run_game("Trap the Mouse - PvP Mode", 25, 15, 20, 0.07))
     draw_button(50, 300, 300, 60, "Player vs AI (Easy)",
                 lambda: run_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.07, 'easy'))
     draw_button(50, 400, 300, 60, "Player vs AI (Medium)",
@@ -160,12 +160,13 @@ def draw_game_buttons():
                 lambda: sys.exit())
 
 
-# pvp game
-def run_player_vs_player(game_title, hex_size, map_rows, map_cols, colored_percentage):
+def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, difficulty=None):
     hexagons, start_x, total_width, start_y, total_height, clock, run = init_game(game_title, hex_size, map_rows,
                                                                                   map_cols, colored_percentage)
-
-    player_turn = 1
+    if difficulty is None:
+        player_turn = 1
+    else:
+        player_turn = None
 
     while run:
         for event in pygame.event.get():
@@ -180,74 +181,45 @@ def run_player_vs_player(game_title, hex_size, map_rows, map_cols, colored_perce
                             hexagon.x < mouse_pos[0] < hexagon.x + 3 * hex_size / 2
                             and hexagon.y < mouse_pos[1] < hexagon.y + math.sqrt(3) * hex_size
                     ):
-                        if hexagon.color == WHITE:
-                            if player_turn == 1:
-                                hexagon.color = RED
-                                valid_move = True
-                            else:
-                                neighbors = get_neighbors(hexagons, hexagon, hex_size)
-                                valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == BLACK]
-                                if valid_neighbors:
-                                    hexagon.color = BLACK
-                                    for neighbor in valid_neighbors:
-                                        if neighbor.color == BLACK:
-                                            neighbor.color = WHITE
+                        if difficulty is None:
+                            if hexagon.color == WHITE:
+                                if player_turn == 1:
+                                    hexagon.color = RED
                                     valid_move = True
                                 else:
-                                    valid_move = False
-                        break
-
-                for hexagon in hexagons:
-                    if hexagon.color == BLACK:
-                        neighbors = get_neighbors(hexagons, hexagon, hex_size)
-                        new_neighbors = [neighbor for neighbor in neighbors if neighbor.color == WHITE]
-                        if not new_neighbors:
-                            display_screen("Congratulations! Player 1 won!")
-                            run = False
+                                    neighbors = get_neighbors(hexagons, hexagon, hex_size)
+                                    valid_neighbors = [neighbor for neighbor in neighbors if neighbor.color == BLACK]
+                                    if valid_neighbors:
+                                        hexagon.color = BLACK
+                                        for neighbor in valid_neighbors:
+                                            if neighbor.color == BLACK:
+                                                neighbor.color = WHITE
+                                        valid_move = True
+                                    else:
+                                        valid_move = False
                             break
-                        elif hexagon.x <= start_x or hexagon.x + 3 * hex_size / 2 >= start_x + total_width:
-                            display_screen("Congratulations! Player 2 won!")
-                            run = False
-                            break
-
-                if valid_move:
-                    player_turn = 3 - player_turn
-
-                handle_click(mouse_pos, run)
-
-        for hexagon in hexagons:
-            draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)
-
-        draw_player_turn(player_turn)
-        draw_game_buttons()
-
-        pygame.display.update()
-        clock.tick(60)
-
-    pygame.quit()
-
-
-def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, difficulty):
-    hexagons, start_x, total_width, start_y, total_height, clock, run = init_game(game_title, hex_size, map_rows,
-                                                                                  map_cols, colored_percentage)
-
-    while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = pygame.mouse.get_pos()
-                valid_move = False
-
-                for hexagon in hexagons:
-                    if (
-                            hexagon.x < mouse_pos[0] < hexagon.x + 3 * hex_size / 2
-                            and hexagon.y < mouse_pos[1] < hexagon.y + math.sqrt(3) * hex_size
-                    ):
-                        if hexagon.color == WHITE:
+                        elif hexagon.color == WHITE and difficulty is not None:
                             hexagon.color = RED
                             valid_move = True
                         break
+
+                if difficulty is None:
+                    for hexagon in hexagons:
+                        if hexagon.color == BLACK:
+                            neighbors = get_neighbors(hexagons, hexagon, hex_size)
+                            new_neighbors = [neighbor for neighbor in neighbors if neighbor.color == WHITE]
+                            if not new_neighbors:
+                                display_screen("Congratulations! Player 1 won!")
+                                run = False
+                                break
+                            elif hexagon.x <= start_x or hexagon.x + 3 * hex_size / 2 >= start_x + total_width:
+                                display_screen("Congratulations! Player 2 won!")
+                                run = False
+                                break
+
+                    if valid_move:
+                        player_turn = 3 - player_turn
+
 
                 if valid_move:
                     for hexagon in hexagons:
@@ -288,6 +260,9 @@ def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, diffi
 
         for hexagon in hexagons:
             draw_hexagon(win, hexagon.x, hexagon.y, hex_size, hexagon.color, BLACK, 1)
+
+        if difficulty is None:
+            draw_player_turn(player_turn)
 
         draw_title()
         draw_game_buttons()
