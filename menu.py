@@ -10,10 +10,22 @@ from menu_utils import draw_button, draw_title, draw_image, draw_player_turn, ha
 
 
 def initialize_window():
+    """
+    Initializes the pygame window with the game title.
+
+    Returns:
+    None
+    """
     pygame.display.set_caption("Trap the Mouse")
 
 
 def draw_menu_buttons():
+    """
+    Draws the menu buttons on the pygame window.
+
+    Returns:
+    None
+    """
     draw_button(50, 200, 300, 60, "Player vs Player",
                 lambda: run_game("Trap the Mouse - PvP Mode", 25, 15, 20, 0.07))
     draw_button(50, 300, 300, 60, "Player vs AI (Easy)",
@@ -26,6 +38,12 @@ def draw_menu_buttons():
 
 
 def menu():
+    """
+    Displays the main menu of the game.
+
+    Returns:
+    None
+    """
     pygame.font.init()
     initialize_window()
     clock = pygame.time.Clock()
@@ -48,6 +66,15 @@ def menu():
 
 
 def display_screen(message):
+    """
+    Displays a screen with a given message.
+
+    Parameters:
+    message (str): The message to display.
+
+    Returns:
+    None
+    """
     win.fill(PINK)
     title_font = pygame.font.Font("Design/MagicEnglish.ttf", 60)
 
@@ -88,6 +115,12 @@ def display_screen(message):
 
 
 def display_rules_screen():
+    """
+    Displays the rules screen of the game.
+
+    Returns:
+    None
+    """
     win.fill(PINK)
     title_font = pygame.font.Font("Design/MagicEnglish.ttf", 60)
 
@@ -141,6 +174,19 @@ def display_rules_screen():
 
 
 def init_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
+    """
+    Initializes the game with given parameters.
+
+    Parameters:
+    game_title (str): The title of the game.
+    hex_size (int): The size of the hexagons.
+    map_rows (int): The number of rows in the map.
+    map_cols (int): The number of columns in the map.
+    colored_percentage (float): The percentage of colored hexagons.
+
+    Returns:
+    tuple: A tuple containing the hexagons, start_x, total_width, start_y, total_height, clock, run.
+    """
     pygame.display.set_caption(game_title)
     clock = pygame.time.Clock()
     run = True
@@ -155,6 +201,12 @@ def init_game(game_title, hex_size, map_rows, map_cols, colored_percentage):
 
 
 def draw_game_buttons():
+    """
+    Draws the game buttons on the pygame window.
+
+    Returns:
+    None
+    """
     draw_button(RETURN_BUTTON["x"], RETURN_BUTTON["y"], RETURN_BUTTON["width"], RETURN_BUTTON["height"],
                 "Return to Main Menu", lambda: menu())
     draw_button(EXIT_BUTTON["x"], EXIT_BUTTON["y"], EXIT_BUTTON["width"], EXIT_BUTTON["height"], "Exit",
@@ -162,6 +214,20 @@ def draw_game_buttons():
 
 
 def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, difficulty=None):
+    """
+    Runs the game with given parameters.
+
+    Parameters:
+    game_title (str): The title of the game.
+    hex_size (int): The size of the hexagons.
+    map_rows (int): The number of rows in the map.
+    map_cols (int): The number of columns in the map.
+    colored_percentage (float): The percentage of colored hexagons.
+    difficulty (str, optional): The difficulty of the game. Defaults to None.
+
+    Returns:
+    None
+    """
     hexagons, start_x, total_width, start_y, total_height, clock, run = init_game(game_title, hex_size, map_rows,
                                                                                   map_cols, colored_percentage)
     if difficulty is None:

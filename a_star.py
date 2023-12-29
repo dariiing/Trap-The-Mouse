@@ -6,12 +6,35 @@ from map import get_neighbors
 
 
 def heuristic(a, b):
+    """
+    Calculates the heuristic value for A* search algorithm.
+
+    Parameters:
+    a (Hexagon): The starting hexagon.
+    b (Hexagon): The goal hexagon.
+
+    Returns:
+    int: The maximum of the absolute differences in the x and y coordinates of the two hexagons.
+    """
     dx = abs(b.x - a.x)
     dy = abs(b.y - a.y)
     return max(dx, dy)
 
 
 def a_star_search(hexagons, start, goal, hex_size):
+    """
+    Performs the A* search algorithm on a grid of hexagons.
+
+    Parameters:
+    hexagons (list): The list of all hexagons.
+    start (Hexagon): The starting hexagon.
+    goal (Hexagon): The goal hexagon.
+    hex_size (int): The size of the hexagons.
+
+    Returns:
+    dict: A dictionary mapping each hexagon to the hexagon that came before it in the path.
+    dict: A dictionary mapping each hexagon to the cost of the path from the start hexagon to it.
+    """
     frontier = []
     heapq.heappush(frontier, (0, start))
     came_from = {start: None}
@@ -36,6 +59,21 @@ def a_star_search(hexagons, start, goal, hex_size):
 
 
 def shortest_path_to_edge(hexagons, start, hex_size, start_x, start_y, total_width, total_height):
+    """
+    Finds the shortest path from a starting hexagon to the edge of the grid.
+
+    Parameters:
+    hexagons (list): The list of all hexagons.
+    start (Hexagon): The starting hexagon.
+    hex_size (int): The size of the hexagons.
+    start_x (int): The x-coordinate of the top left corner of the grid.
+    start_y (int): The y-coordinate of the top left corner of the grid.
+    total_width (int): The total width of the grid.
+    total_height (int): The total height of the grid.
+
+    Returns:
+    list: The shortest path from the starting hexagon to the edge of the grid.
+    """
     goals = [hexs for hexs in hexagons if is_edge_hex(hexs, hex_size, start_x, start_y, total_width, total_height)]
     shortest_path = None
     shortest_path_cost = float('inf')
@@ -50,6 +88,17 @@ def shortest_path_to_edge(hexagons, start, hex_size, start_x, start_y, total_wid
 
 
 def reconstruct_path(came_from, start, goal):
+    """
+    Reconstructs the path from the start hexagon to the goal hexagon.
+
+    Parameters:
+    came_from (dict): A dictionary mapping each hexagon to the hexagon that came before it in the path.
+    start (Hexagon): The starting hexagon.
+    goal (Hexagon): The goal hexagon.
+
+    Returns:
+    list: The path from the start hexagon to the goal hexagon.
+    """
     current = goal
     path = [current]
 
@@ -61,6 +110,20 @@ def reconstruct_path(came_from, start, goal):
 
 
 def is_edge_hex(hexagon, hex_size, start_x, start_y, total_width, total_height):
+    """
+    Checks if a hexagon is on the edge of the grid.
+
+    Parameters:
+    hexagon (Hexagon): The hexagon to check.
+    hex_size (int): The size of the hexagons.
+    start_x (int): The x-coordinate of the top left corner of the grid.
+    start_y (int): The y-coordinate of the top left corner of the grid.
+    total_width (int): The total width of the grid.
+    total_height (int): The total height of the grid.
+
+    Returns:
+    bool: True if the hexagon is on the edge of the grid, False otherwise.
+    """
     return (
             hexagon.x <= start_x
             or hexagon.x + 3 * hex_size / 2 >= start_x + total_width

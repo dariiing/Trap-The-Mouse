@@ -6,6 +6,24 @@ from hexagon import Hexagon
 
 
 def generate_hexagon_map(rows, cols, hex_size, screen_width, screen_height, colored_percentage=0.05):
+    """
+    Generates a hexagonal map.
+
+    Parameters:
+    rows (int): The number of rows in the map.
+    cols (int): The number of columns in the map.
+    hex_size (int): The size of the hexagons.
+    screen_width (int): The width of the screen.
+    screen_height (int): The height of the screen.
+    colored_percentage (float, optional): The percentage of colored hexagons. Defaults to 0.05.
+
+    Returns:
+    list: The list of all hexagons.
+    int: The x-coordinate of the top left corner of the map.
+    int: The total width of the map.
+    int: The y-coordinate of the top left corner of the map.
+    int: The total height of the map.
+    """
     hexagons = []
     total_width = cols * 3 * hex_size / 2
     total_height = rows * math.sqrt(3) * hex_size
@@ -49,6 +67,17 @@ def generate_hexagon_map(rows, cols, hex_size, screen_width, screen_height, colo
 
 
 def get_neighbors(hexagons, target_hexagon, hex_size):
+    """
+    Gets the neighbors of a target hexagon.
+
+    Parameters:
+    hexagons (list): The list of all hexagons.
+    target_hexagon (Hexagon): The target hexagon.
+    hex_size (int): The size of the hexagons.
+
+    Returns:
+    list: The list of neighbors of the target hexagon.
+    """
     neighbors = []
     for hexagon in hexagons:
         if hexagon != target_hexagon:
