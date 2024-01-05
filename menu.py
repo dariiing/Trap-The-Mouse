@@ -31,9 +31,9 @@ def draw_menu_buttons():
     draw_button(50, 300, 300, 60, "Player vs AI (Easy)",
                 lambda: run_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.07, 'easy'))
     draw_button(50, 400, 300, 60, "Player vs AI (Medium)",
-                lambda: run_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.1, 'medium'))
+                lambda: run_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.07, 'medium'))
     draw_button(50, 500, 300, 60, "Player vs AI (Hard)",
-                lambda: run_game("Trap the Mouse - PvAI Hard", 25, 15, 20, 0.04, 'hard'))
+                lambda: run_game("Trap the Mouse - PvAI Hard", 25, 15, 20, 0.03, 'hard'))
     draw_button(50, 600, 300, 60, "Rules", lambda: display_rules_screen())
 
 
@@ -309,15 +309,19 @@ def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, diffi
                                     elif difficulty == 'medium' or difficulty == 'hard':
                                         shortest_path = shortest_path_to_edge(hexagons, hexagon, hex_size, start_x,
                                                                               start_y, total_width, total_height)
-                                        print(shortest_path)
                                         if shortest_path is not None:
                                             next_hex = shortest_path[1]
-                                            next_hex.color = BLACK
-                                            hexagon.color = WHITE
+                                            if next_hex.color == WHITE:
+                                                next_hex.color = BLACK
+                                                hexagon.color = WHITE
+                                            else:
+                                                display_screen("Congratulations! You won!")
+                                                run = False
+                                                break
                                         else:
-                                            random_choice = random.choice(valid_neighbors)
-                                            random_choice.color = BLACK
-                                            hexagon.color = WHITE
+                                            display_screen("Congratulations! You won!")
+                                            run = False
+                                            break
                                         break
 
                                 else:
