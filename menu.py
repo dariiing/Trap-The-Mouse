@@ -314,6 +314,11 @@ def run_game(game_title, hex_size, map_rows, map_cols, colored_percentage, diffi
                                             next_hex = shortest_path[1]
                                             next_hex.color = BLACK
                                             hexagon.color = WHITE
+                                        else:
+                                            random_choice = random.choice(valid_neighbors)
+                                            random_choice.color = BLACK
+                                            hexagon.color = WHITE
+                                        break
 
                                 else:
                                     display_screen("Congratulations! You won!")
