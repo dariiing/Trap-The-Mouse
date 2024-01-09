@@ -31,9 +31,9 @@ def draw_menu_buttons():
     draw_button(50, 300, 300, 60, "Player vs AI (Easy)",
                 lambda: run_game("Trap the Mouse - PvAI Easy", 25, 15, 20, 0.07, 'easy'))
     draw_button(50, 400, 300, 60, "Player vs AI (Medium)",
-                lambda: run_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.07, 'medium'))
+                lambda: run_game("Trap the Mouse - PvAI Medium", 25, 15, 20, 0.04, 'medium'))
     draw_button(50, 500, 300, 60, "Player vs AI (Hard)",
-                lambda: run_game("Trap the Mouse - PvAI Hard", 25, 15, 20, 0.03, 'hard'))
+                lambda: run_game("Trap the Mouse - PvAI Hard", 25, 15, 20, 0.02, 'hard'))
     draw_button(50, 600, 300, 60, "Rules", lambda: display_rules_screen())
 
 
