@@ -9,7 +9,7 @@ def draw_title():
     and then blits it to the pygame window at a specified location.
 
     Returns:
-    None
+    - None
     """
     title_font = pygame.font.Font("Design/MagicEnglish.ttf", 60)
     title_text = title_font.render("Trap the Mouse", True, WHITE, PINK)
@@ -26,10 +26,10 @@ def draw_player_turn(player_turn):
     The text is then blitted to the pygame window at a specified location.
 
     Parameters:
-    player_turn (int): The current player's turn.
+    - player_turn (int): The current player's turn.
 
     Returns:
-    None
+    - None
     """
     draw_title()
 
@@ -47,15 +47,15 @@ def draw_button(x, y, width, height, text, action=None):
     If the button is clicked and an action is provided, the action is executed.
 
     Parameters:
-    x (int): The x-coordinate of the top left corner of the button.
-    y (int): The y-coordinate of the top left corner of the button.
-    width (int): The width of the button.
-    height (int): The height of the button.
-    text (str): The text label of the button.
-    action (function, optional): The function to execute when the button is clicked. Defaults to None.
+    - x (int): The x-coordinate of the top left corner of the button.
+    - y (int): The y-coordinate of the top left corner of the button.
+    - width (int): The width of the button.
+    - height (int): The height of the button.
+    - text (str): The text label of the button.
+    - action (function, optional): The function to execute when the button is clicked. Defaults to None.
 
     Returns:
-    None
+    - None
     """
     shadow_color = (240, 180, 190)
     shadow_offset = 5
@@ -84,10 +84,10 @@ def draw_image(image):
     and then blits the image to the pygame window at a specified location.
 
     Parameters:
-    image (pygame.Surface): The image to be drawn.
+    - image (pygame.Surface): The image to be drawn.
 
     Returns:
-    None
+    - None
     """
     scaled_width = image.get_width() // 1.5
     scaled_height = image.get_height() // 1.5
@@ -104,11 +104,11 @@ def handle_click(mouse_pos, run):
     If it is, the function sets the run variable to False, indicating that the game should stop running.
 
     Parameters:
-    mouse_pos (tuple): The x and y coordinates of the mouse click.
-    run (bool): A flag indicating whether the game is currently running.
+    - mouse_pos (tuple): The x and y coordinates of the mouse click.
+    - run (bool): A flag indicating whether the game is currently running.
 
     Returns:
-    None
+    - None
     """
     if (
             EXIT_BUTTON["x"] < mouse_pos[0] < EXIT_BUTTON["x"] + EXIT_BUTTON["width"]
