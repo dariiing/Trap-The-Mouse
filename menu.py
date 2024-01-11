@@ -9,16 +9,6 @@ from map import generate_hexagon_map, get_neighbors
 from menu_utils import draw_button, draw_title, draw_image, draw_player_turn, handle_click
 
 
-def initialize_window():
-    """
-    Initializes the pygame window with the game title.
-
-    Returns:
-    - None
-    """
-    pygame.display.set_caption("Trap the Mouse")
-
-
 def draw_menu_buttons():
     """
     Draws the menu buttons on the pygame window.
@@ -45,7 +35,7 @@ def menu():
     - None
     """
     pygame.font.init()
-    initialize_window()
+    pygame.display.set_caption("Trap the Mouse")
     clock = pygame.time.Clock()
     run = True
     original_image = pygame.image.load("Design/mickey_mouse.png")
