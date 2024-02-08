@@ -3,3 +3,5 @@ TrapTheMouse, both with the computer and with another opponent. The computer wil
 according to the rules of the game (there must be at least 3 levels of difficulty related to how to play
 the computer). The game board is generated from the start with various obstacles.
 https://www.mathplayground.com/logic_trap_the_mouse.html
+
+Project created with Python and PyGame
